@@ -1,62 +1,68 @@
-# Reverse Proxy Setup with Docker
+# Docker Multi-Server Setup
 
-This repository sets up a reverse proxy to route traffic through two Nginx web servers using Docker Compose. The configuration includes persistent storage for server data and custom network settings.
+This repository contains the configuration files for setting up multiple web servers using Docker containers. It includes configurations for HTTPS reverse-proxying with SSL
+certificates managed by Certbot.
 
-## Features
-- **Docker Compose**: Manages multiple services in a single YAML file.
-- **Nginx Web Servers**: Configured for static content serving.
-- **Reverse Proxy**: Routes HTTP requests efficiently across multiple servers.
-- **Persistent Storage**: Uses Docker volumes for configuration and data persistence.
+## Overview
+
+The setup includes:
+- Web servers
+- A reverse-proxy server to handle incoming requests and manage SSL certificates with Certbot
 
 ## Getting Started
 
 ### Prerequisites
-- Docker installed on your system https://docs.docker.com/get-docker/
-- Docker Compose installed https://docs.docker.com/compose/install
+
+- Docker installed on your machine.
+- Docker Compose installed on your machine.
 
 ### Installation
 
-Clone this repository:
+1. Clone the repository:
 ```
-git clone https://github.com/YOUR_USERNAME/docker-webserver.git
-cd docker-webserver
+    git clone https://github.com/rickaha/WebServer.git
+    cd WebServer
+```
+- The https configuration files in reverse-proxy/conf.d/ need to be marked .disabled
+
+2. Build and start the containers using Docker Compose:
+```
+    sudo docker compose up -d
 ```
 
-### Running the Services
-
-To start all services, navigate to the project directory and run:
+3. Run Certbot to obtain SSL certificates (do this for every website):
 ```
-docker-compose up -d
+    sudo docker compose run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ -d example1.se -d www.example1.se
+```
+- The http configuration files in reverse-proxy/conf.d/ can now be .disabled and instead use the https files.
+
+4. Create cron job so Certbot try to reneiw SSL certificates once a week:
+```
+    sudo crontab -e
+```
+Add the following to the end of the file:
+
+```
+0 1 * * sun docker compose -f /home/<your_username>/WebServer/docker-compose.yml run --rm certbot renew > /home/<your_username>/WebServer/log.txt
+30 1 * * sun docker compose -f /home/<your_username>/WebServer/docker-compose.yml restart reverse-proxy
 ```
 
-This command will create and start containers for webserver1, webserver2, and the reverse proxy
-server within a custom network named proxy-net.
+## Docker Compose Files
 
-## Configuration Details
+- docker-compose.yml: configuration file defining all services.
 
-### Docker Compose File
+## Reverse Proxy Configuration
 
-The docker-compose.yml file sets up:
-- Two Nginx web servers (webserver1, webserver2) with persistent storage volumes for
-  configuration files.
-- A reverse proxy server that routes requests to the correct web server based on hostname or path.
+- The reverse proxy is configured to handle requests for multiple domains. 
 
-### Configuration Files
+- The SSL certificates are managed by Certbot and need to be reneiwed every 3 months. 
 
-#### Nginx Web Server Configurations
-The basic Nginx server block configurations are located in:
-- webservers/webserver1/default.conf
-- webservers/webserver2/default.conf
+- The configuration files in reverse-proxy/conf.d/ need to be marked .disabled to not be included:
 
-These files define listening ports, server names, root directories, and error handling pages for
-serving static content over HTTP.
+```
+    mv mysite.com.conf mysite.com.conf.disabled
+```
 
-#### Reverse Proxy Configuration
-Default Nginx configuration is added to handle basic HTTP requests. It serves
-static content and includes server-specific proxy configurations:
-- reverse-proxy/default.conf
+## Websites
 
-### Persistent Storage
-
-Volumes are used to persistently store configurations and data for the web servers and reverse
-proxy, ensuring that changes survive container restart
+- Place your website content in the respective directories under sites/.
