@@ -43,27 +43,3 @@ server {
     #    deny  all;
     #}
 }
-
-server {
-    listen       80;
-    listen  [::]:80;
-    server_name  www.example1.se example1.se;
-
-    access_log  /var/log/nginx/example1.access.log  main;
-
-    location / {
-        proxy_pass   http://webserver1;
-    }
-}
-
-server {
-    listen       80;
-    listen  [::]:80;
-    server_name  www.example2.se example2.se;
-
-    access_log  /var/log/nginx/example2.access.log  main;
-
-    location / {
-        proxy_pass   http://webserver2;
-    }
-}

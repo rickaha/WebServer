@@ -1,0 +1,32 @@
+server {
+    listen       80;
+    listen  [::]:80;
+    server_name  example1.se www.example1.se;
+    server_tokens off;
+
+    access_log  /var/log/nginx/example1.access.log  main;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen      443 ssl;
+    listen [::]:443 ssl;
+
+    server_name example1.se www.example1.se;
+
+    ssl_certificate /etc/nginx/ssl/live/example1.se/fullchain.pem;
+    ssl_certificate_key /etc/nginx/ssl/live/example1.se/privkey.pem;
+
+    location / {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_pass   http://example1-webserver;
+    }
+}
