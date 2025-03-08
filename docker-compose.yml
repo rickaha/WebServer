@@ -1,21 +1,21 @@
 services:
   webserver1:
     image: nginx
-    container_name: webserver1
+    container_name: example1-webserver
     restart: always
     volumes:
-      - ./sites/example1.se/:/usr/share/nginx/html/
-      - ./webservers/webserver1/default.conf:/etc/nginx/conf.d/default.conf
+      - ./sites/example1.se/:/usr/share/nginx/html:ro
+      - ./webservers/example1/default.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
       - proxy-net
 
   webserver2:
     image: nginx
-    container_name: webserver2
+    container_name: example2-webserver
     restart: always
     volumes:
-      - ./sites/example2.se/:/usr/share/nginx/html/
-      - ./webservers/webserver2/default.conf:/etc/nginx/conf.d/default.conf
+      - ./sites/example2.se/:/usr/share/nginx/html:ro
+      - ./webservers/example2/default.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
       - proxy-net
 
@@ -25,14 +25,25 @@ services:
     restart: always
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ./reverse-proxy/default.conf:/etc/nginx/conf.d/default.conf
-      - ./reverse-proxy/html/:/usr/share/nginx/html/
+      - ./reverse-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./reverse-proxy/conf.d/:/etc/nginx/conf.d/:ro
+      - ./certbot/www/:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
     networks:
       - proxy-net
     depends_on:
-      - webserver1
-      - webserver2
+      - certbot
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: certbot
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+    networks:
+      - proxy-net
 
 networks:
   proxy-net:
