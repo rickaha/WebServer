@@ -66,3 +66,4 @@ Add the following to the end of the file:
 ## Websites
 
 - Place your website content in the respective directories under sites/.
+- Place a .env file containing (MYSQL_ROOT_PASSWORD, MYSQL_USER, MYSQL_PASSWORD) in the project root.
