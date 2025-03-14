@@ -1,6 +1,6 @@
 include:
-  - example1.com.yml
-  - example2.com.yml
+  - example1.yml
+  - example2.yml
 
 services:
   reverse-proxy:
