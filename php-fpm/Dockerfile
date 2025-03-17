@@ -26,7 +26,7 @@ RUN mkdir -p /var/www/vendor && \
 # RUN composer install --no-scripts --no-autoloader
 
 # Copy env variables
-COPY ./config.php /var/www/
+COPY ../config.php /var/www/
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/

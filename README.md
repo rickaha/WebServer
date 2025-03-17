@@ -20,31 +20,30 @@ The setup includes:
 
 1. Clone the repository:
 ```
-    git clone https://github.com/rickaha/WebServer.git
-    cd WebServer
+   git clone https://github.com/rickaha/WebServer.git && cd WebServer
 ```
 - The https configuration files in reverse-proxy/conf.d/ need to be marked .disabled
 
 2. Build and start the containers using Docker Compose:
 ```
-    sudo docker compose up -d
+   sudo docker compose up -d
 ```
 
 3. Run Certbot to obtain SSL certificates (do this for every website):
 ```
-    sudo docker compose run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ -d example1.se -d www.example1.se
+   sudo docker compose run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ -d example1.se -d www.example1.se
 ```
 - The http configuration files in reverse-proxy/conf.d/ can now be .disabled and instead use the https files.
 
 4. Create cron job so Certbot try to reneiw SSL certificates once a week:
 ```
-    sudo crontab -e
+   sudo crontab -e
 ```
 Add the following to the end of the file:
 
 ```
-0 1 * * sun docker compose -f /home/<your_username>/WebServer/docker-compose.yml run --rm certbot renew > /home/<your_username>/WebServer/log.txt
-30 1 * * sun docker compose -f /home/<your_username>/WebServer/docker-compose.yml restart reverse-proxy
+   0 1 * * sun docker compose -f /home/<your_username>/WebServer/docker-compose.yml run --rm certbot renew > /home/<your_username>/WebServer/log.txt
+   30 1 * * sun docker compose -f /home/<your_username>/WebServer/docker-compose.yml restart reverse-proxy
 ```
 
 ## Docker Compose Files
@@ -60,10 +59,28 @@ Add the following to the end of the file:
 - The configuration files in reverse-proxy/conf.d/ need to be marked .disabled to not be included:
 
 ```
-    mv mysite.com.conf mysite.com.conf.disabled
+   mv mysite.com.conf mysite.com.conf.disabled
 ```
 
 ## Websites
 
 - Place your website content in the respective directories under sites/.
-- Place a .env file containing (MYSQL_ROOT_PASSWORD, MYSQL_USER, MYSQL_PASSWORD) in the project root.
+- Place .env file in project root containing: 
+
+``` dotenv
+   MYSQL_ROOT_PASSWORD=**** 
+   MYSQL_USER=****
+   MYSQL_PASSWORD=****
+```
+- Place config.php file in project root containing: 
+
+``` php
+   <?php
+   return [
+       'smtp_password' => '****',
+       'smtp_username' => '****',
+       'smtp_server' => '****',
+       'mail_recipient' => '****'
+   ];
+   ?>
+```
