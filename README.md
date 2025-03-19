@@ -22,7 +22,6 @@ The setup includes:
 ```
    git clone https://github.com/rickaha/WebServer.git && cd WebServer
 ```
-- The https configuration files in reverse-proxy/conf.d/ need to be marked .disabled
 
 2. Build and start the containers using Docker Compose:
 ```
@@ -31,9 +30,9 @@ The setup includes:
 
 3. Run Certbot to obtain SSL certificates (do this for every website):
 ```
-   sudo docker compose run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ -d example1.se -d www.example1.se
+   sudo docker compose run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ -d example.com -d www.example.com
 ```
-- The http configuration files in reverse-proxy/conf.d/ can now be .disabled and instead use the https files.
+- The http configuration files in reverse-proxy/sites-enabled/ can now be removed and instead copy the https files from sites-available to sites-enabled.
 
 4. Create cron job so Certbot try to reneiw SSL certificates once a week:
 ```
@@ -56,23 +55,19 @@ Add the following to the end of the file:
 
 - The SSL certificates are managed by Certbot and need to be reneiwed every 3 months. 
 
-- The configuration files in reverse-proxy/conf.d/ need to be marked .disabled to not be included:
-
-```
-   mv mysite.com.conf mysite.com.conf.disabled
-```
+- To activate sites, place configuration files in reverse-proxy/sites-enabled/
 
 ## Websites
 
-- Place your website content in the respective directories under sites/.
-- Place .env file in project root containing: 
+- Place your website content in the respective service directory under public-html/.
+- Place .env file in services/service2/: 
 
 ``` dotenv
    MYSQL_ROOT_PASSWORD=**** 
    MYSQL_USER=****
    MYSQL_PASSWORD=****
 ```
-- Place config.php file in project root containing: 
+- Place config.php file in php-fpm/: 
 
 ``` php
    <?php
