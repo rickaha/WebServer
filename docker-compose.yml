@@ -12,7 +12,7 @@ services:
       - "443:443"
     volumes:
       - ./reverse-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./reverse-proxy/conf.d/:/etc/nginx/conf.d/:ro
+      - ./reverse-proxy/sites-enabled/:/etc/nginx/conf.d/:ro
       - certbot:/var/www/certbot/:ro
       - certs:/etc/nginx/ssl/:ro
     networks:
