@@ -1,7 +1,7 @@
 services:
-  example2-db:
+  service2-db:
     image: mariadb:10.11
-    container_name: example2-db
+    container_name: service2-db
     restart: unless-stopped
     env_file: .env
     environment:
@@ -10,48 +10,48 @@ services:
       - MYSQL_PASSWORD=$MYSQL_PASSWORD
       - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
     volumes:
-      - example2db:/var/lib/mysql
+      - service2db:/var/lib/mysql
     networks:
-      - example2-db-net
+      - service2-db-net
 
-  example2-wordpress:
+  service2-wp:
     depends_on:
-      - example2-db
+      - service2-db
     image: wordpress:6.7.2-fpm
-    container_name: example2-wordpress
+    container_name: service2-wp
     restart: unless-stopped
     env_file: .env
     environment:
-      - WORDPRESS_DB_HOST=example2-db:3306
+      - WORDPRESS_DB_HOST=service2-db:3306
       - WORDPRESS_DB_USER=$MYSQL_USER
       - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
       - WORDPRESS_DB_NAME=wordpress
       - WORDPRESS_CONFIG_EXTRA=
-          define('WP_HOME','http://example2.com/');
-          define('WP_SITEURL','http://example2.com/');
+          define('WP_HOME','http://example.com/');
+          define('WP_SITEURL','http://example.com/');
     volumes:
       - example2wp:/var/www/html:rw
     networks:
       - webserver-net
-      - example2-db-net
+      - service2-db-net
 
-  novatec-webserver:
+  service2-webserver:
     depends_on:
-      - example2-wordpress
+      - service2-wp
     image: nginx
-    container_name: example2-webserver
+    container_name: service2-webserver
     restart: always
     volumes:
-      - example2wp:/var/www/html:ro
-      - ./webservers/example2/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - service2wp:/var/www/html:ro
+      - ./default.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
       - webserver-net
 
 networks:
-  example2-db-net:
+  service2-db-net:
     driver: bridge
-    name: example2-db-net
+    name: service2-db-net
 
 volumes:
-  example2db:
-  example2wp:
+  service2db:
+  service2wp:

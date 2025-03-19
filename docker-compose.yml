@@ -1,6 +1,6 @@
 include:
-  - example1.yml
-  - example2.yml
+  - ./services/service1/compose.yml
+  - ./services/service2/compose.yml
 
 services:
   reverse-proxy:
