@@ -66,6 +66,10 @@ Add the following to the end of the file:
    MYSQL_ROOT_PASSWORD=**** 
    MYSQL_USER=****
    MYSQL_PASSWORD=****
+   MYSQL_DB=wordpress
+   WP_HOME=http://website.com
+   WP_SITEURL=http://website.com
+
 ```
 - Place config.php file in php-fpm/: 
 

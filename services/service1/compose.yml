@@ -3,7 +3,7 @@ services:
     depends_on:
       - service1-php-fpm
     image: nginx
-    container_name: example1-webserver
+    container_name: service1-webserver
     restart: always
     volumes:
       - ./public-html/:/var/www/html/:ro

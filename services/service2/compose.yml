@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
-      - MYSQL_DATABASE=wordpress
+      - MYSQL_DATABASE=$MYSQL_DB
       - MYSQL_USER=$MYSQL_USER
       - MYSQL_PASSWORD=$MYSQL_PASSWORD
       - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
@@ -25,12 +25,13 @@ services:
       - WORDPRESS_DB_HOST=service2-db:3306
       - WORDPRESS_DB_USER=$MYSQL_USER
       - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
-      - WORDPRESS_DB_NAME=wordpress
+      - WORDPRESS_DB_NAME=$MYSQL_DB
       - WORDPRESS_CONFIG_EXTRA=
-          define('WP_HOME','http://example.com/');
-          define('WP_SITEURL','http://example.com/');
+            define('WP_HOME','${WP_HOME}');
+            define('WP_SITEURL','${WP_SITEURL}');
+
     volumes:
-      - example2wp:/var/www/html:rw
+      - service2wp:/var/www/html:rw
     networks:
       - webserver-net
       - service2-db-net
