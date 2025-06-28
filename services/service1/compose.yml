@@ -5,6 +5,12 @@ services:
     image: nginx
     container_name: service1-webserver
     restart: always
+    env_file: .env
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - UMASK=$UMASK
+      - TZ=$TZ
     volumes:
       - ./public-html/:/var/www/html/:ro
       - ./default.conf:/etc/nginx/conf.d/default.conf:ro
@@ -16,6 +22,12 @@ services:
       context: ../../php-fpm
       dockerfile: Dockerfile
     container_name: service1-php-fpm
+    env_file: .env
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - UMASK=$UMASK
+      - TZ=$TZ
     volumes:
       - ./public-html/:/var/www/html:ro
     networks:
