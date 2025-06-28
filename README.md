@@ -53,14 +53,25 @@ Add the following to the end of the file:
 
 - The reverse proxy is configured to handle requests for multiple domains. 
 
-- The SSL certificates are managed by Certbot and need to be reneiwed every 3 months. 
+- The SSL certificates are managed by Certbot and need to be renewed every 3 months.
 
 - To activate sites, place configuration files in reverse-proxy/sites-enabled/
 
 ## Websites
 
 - Place your website content in the respective service directory under public-html/.
-- Place .env file in services/service2/: 
+
+- Place .env file in services/service1/:
+
+``` dotenv
+   PUID=****
+   GUID=****
+   UMASK=002
+   TZ=Etc/UTC
+
+```
+
+- Place .env file in services/service2/:
 
 ``` dotenv
    MYSQL_ROOT_PASSWORD=**** 
@@ -83,3 +94,15 @@ Add the following to the end of the file:
    ];
    ?>
 ```
+
+## Permissions
+
+- On the host, set the permissions for nginx like:
+
+```
+   sudo adduser --system --no-create-home --group nginx
+   sudo chown -R nginx:nginx services/service1/default.conf
+   sudo chown -R nginx:nginx services/service1/public-html
+   id nginx
+```
+- Now add the correct PUID/PGID to the .env file in services/service1/.
