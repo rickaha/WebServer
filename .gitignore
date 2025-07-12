@@ -1,2 +1,5 @@
-.env
-.config
+.env*
+.config*
+config.php*
+images/
+assets/
