@@ -1,6 +1,6 @@
 services:
   service2-db:
-    image: mariadb:10.11
+    image: mariadb:latest
     container_name: service2-db
     restart: unless-stopped
     env_file: .env
@@ -17,7 +17,7 @@ services:
   service2-wp:
     depends_on:
       - service2-db
-    image: wordpress:6.7.2-fpm
+    image: wordpress:6.8.1-fpm
     container_name: service2-wp
     restart: unless-stopped
     env_file: .env
@@ -41,7 +41,7 @@ services:
       - service2-wp
     image: nginx
     container_name: service2-webserver
-    restart: always
+    restart: unless-stopped
     volumes:
       - service2wp:/var/www/html:ro
       - ./default.conf:/etc/nginx/conf.d/default.conf:ro
