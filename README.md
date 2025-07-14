@@ -34,6 +34,8 @@ The setup includes:
 ```
 - The http configuration files in reverse-proxy/sites-enabled/ can now be removed and instead copy the https files from sites-available to sites-enabled.
 
+- Change WP_HOME and WP_SITEURL from http to https.
+
 4. Create cron job so Certbot try to reneiw SSL certificates once a week:
 ```
    sudo crontab -e
